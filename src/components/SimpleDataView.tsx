@@ -103,6 +103,15 @@ const SimpleDataView: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Exercises Table Data ({exercises.length} records)</h1>
       <p className="text-gray-600 mb-4">{debugInfo}</p>
       
+      {/* Exercise Type Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <h3 className="text-blue-800 font-semibold mb-2">Exercise Type Column</h3>
+        <p className="text-blue-700 text-sm">
+          The <strong>"Exercise Type"</strong> column shows the category of each exercise (Strength, Cardio, Bodyweight, etc.) 
+          with color-coded badges for easy identification.
+        </p>
+      </div>
+      
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-300">
           <thead>
@@ -122,22 +131,55 @@ const SimpleDataView: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {exercises.map((exercise, index) => (
-              <tr key={exercise.id || index} className="hover:bg-gray-50">
-                <td className="border border-gray-300 px-4 py-2 text-sm">{exercise.id?.substring(0, 8)}...</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.user_id}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.user}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.exercise}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.exercise_type || '-'}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.sets}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.reps}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.weight}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.userweight || '-'}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.time}</td>
-                <td className="border border-gray-300 px-4 py-2">{exercise.mood}</td>
-                <td className="border border-gray-300 px-4 py-2 text-sm">{new Date(exercise.created_at).toLocaleString()}</td>
-              </tr>
-            ))}
+            {exercises.map((exercise, index) => {
+              const isCardio = exercise.exercise_type?.toLowerCase().includes('cardio') || 
+                              exercise.exercise?.toLowerCase().includes('running') ||
+                              exercise.exercise?.toLowerCase().includes('jogging') ||
+                              exercise.exercise?.toLowerCase().includes('cycling') ||
+                              exercise.exercise?.toLowerCase().includes('swimming');
+              
+              const isBodyweight = exercise.exercise_type?.toLowerCase().includes('bodyweight') ||
+                                  exercise.exercise?.toLowerCase().includes('push-up') ||
+                                  exercise.exercise?.toLowerCase().includes('pull-up') ||
+                                  exercise.exercise?.toLowerCase().includes('sit-up');
+              
+              return (
+                <tr key={exercise.id || index} className="hover:bg-gray-50">
+                  <td className="border border-gray-300 px-4 py-2 text-sm">{exercise.id?.substring(0, 8)}...</td>
+                  <td className="border border-gray-300 px-4 py-2">{exercise.user_id}</td>
+                  <td className="border border-gray-300 px-4 py-2">{exercise.user}</td>
+                  <td className="border border-gray-300 px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      isCardio ? 'bg-red-100 text-red-800' :
+                      isBodyweight ? 'bg-green-100 text-green-800' :
+                      'bg-blue-100 text-blue-800'
+                    }`}>
+                      {exercise.exercise_type || '-'}
+                    </span>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">{isCardio ? '-' : (exercise.sets || 0)}</td>
+                  <td className="border border-gray-300 px-4 py-2">{isCardio ? '-' : (exercise.reps || 0)}</td>
+                  <td className="border border-gray-300 px-4 py-2">{isCardio ? '-' : (exercise.weight ? `${exercise.weight} lbs` : '-')}</td>
+                  <td className="border border-gray-300 px-4 py-2">{exercise.userweight || '-'} lbs</td>
+                  <td className="border border-gray-300 px-4 py-2">{exercise.time ? `${exercise.time} min` : '-'}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
+                      exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
+                      exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
+                      exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
+                      exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
+                      exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {exercise.mood || '-'}
+                    </span>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-sm">{new Date(exercise.created_at).toLocaleString()}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

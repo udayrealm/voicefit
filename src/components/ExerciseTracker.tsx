@@ -247,71 +247,95 @@ const ExerciseTracker: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Exercise Type</label>
-              <input
-                type="text"
+              <select
                 value={newExercise.exercise_type}
                 onChange={(e) => setNewExercise({...newExercise, exercise_type: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., Strength"
-              />
+                aria-label="Select exercise type"
+              >
+                <option value="">Select Exercise Type</option>
+                <option value="Strength">Strength</option>
+                <option value="Cardio">Cardio</option>
+                <option value="Bodyweight">Bodyweight</option>
+                <option value="Flexibility">Flexibility</option>
+                <option value="Sports">Sports</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sets</label>
-              <input
-                type="number"
-                value={newExercise.sets}
-                onChange={(e) => setNewExercise({...newExercise, sets: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reps</label>
-              <input
-                type="number"
-                value={newExercise.reps}
-                onChange={(e) => setNewExercise({...newExercise, reps: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Weight (lbs)</label>
-              <input
-                type="number"
-                value={newExercise.weight}
-                onChange={(e) => setNewExercise({...newExercise, weight: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">User Weight (lbs)</label>
-              <input
-                type="number"
-                value={newExercise.userweight}
-                onChange={(e) => setNewExercise({...newExercise, userweight: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time (min)</label>
-              <input
-                type="number"
-                value={newExercise.time}
-                onChange={(e) => setNewExercise({...newExercise, time: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            {newExercise.exercise_type && newExercise.exercise_type !== 'Cardio' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sets</label>
+                  <input
+                    type="number"
+                    value={newExercise.sets}
+                    onChange={(e) => setNewExercise({...newExercise, sets: parseInt(e.target.value) || 0})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Reps</label>
+                  <input
+                    type="number"
+                    value={newExercise.reps}
+                    onChange={(e) => setNewExercise({...newExercise, reps: parseInt(e.target.value) || 0})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="0"
+                  />
+                </div>
+              </>
+            )}
+            {newExercise.exercise_type && newExercise.exercise_type === 'Strength' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Weight (lbs)</label>
+                <input
+                  type="number"
+                  value={newExercise.weight}
+                  onChange={(e) => setNewExercise({...newExercise, weight: parseInt(e.target.value) || 0})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0"
+                />
+              </div>
+            )}
+            {newExercise.exercise_type && newExercise.exercise_type === 'Cardio' && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                <input
+                  type="number"
+                  value={newExercise.time}
+                  onChange={(e) => setNewExercise({...newExercise, time: parseInt(e.target.value) || 0})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="30"
+                />
+              </div>
+            )}
+            {newExercise.exercise_type && newExercise.exercise_type !== 'Cardio' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Time (min)</label>
+                <input
+                  type="number"
+                  value={newExercise.time}
+                  onChange={(e) => setNewExercise({...newExercise, time: parseInt(e.target.value) || 0})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0"
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Mood</label>
               <select
                 value={newExercise.mood}
                 onChange={(e) => setNewExercise({...newExercise, mood: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Select mood"
               >
                 <option value="motivated">Motivated</option>
                 <option value="tired">Tired</option>
                 <option value="focused">Focused</option>
                 <option value="energized">Energized</option>
                 <option value="strong">Strong</option>
+                <option value="exhausted">Exhausted</option>
               </select>
             </div>
           </div>
@@ -343,39 +367,62 @@ const ExerciseTracker: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {exercises.map((exercise, index) => (
-                  <tr key={exercise.id || index} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
-                    <td className="px-4 py-2">{exercise.exercise_type || '-'}</td>
-                    <td className="px-4 py-2">{exercise.sets}</td>
-                    <td className="px-4 py-2">{exercise.reps}</td>
-                    <td className="px-4 py-2">{exercise.weight} lbs</td>
-                    <td className="px-4 py-2">{exercise.userweight || '-'} lbs</td>
-                    <td className="px-4 py-2">{exercise.time} min</td>
-                    <td className="px-4 py-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
-                        exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
-                        exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
-                        exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {exercise.mood}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 text-sm text-gray-600">
-                      {new Date(exercise.created_at || '').toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-2">
-                      <button
-                        onClick={() => deleteExercise(exercise.id || '')}
-                        className="text-red-600 hover:text-red-800 text-sm"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {exercises.map((exercise, index) => {
+                  const isCardio = exercise.exercise_type?.toLowerCase().includes('cardio') || 
+                                  exercise.exercise?.toLowerCase().includes('running') ||
+                                  exercise.exercise?.toLowerCase().includes('jogging') ||
+                                  exercise.exercise?.toLowerCase().includes('cycling') ||
+                                  exercise.exercise?.toLowerCase().includes('swimming');
+                  
+                  const isBodyweight = exercise.exercise_type?.toLowerCase().includes('bodyweight') ||
+                                      exercise.exercise?.toLowerCase().includes('push-up') ||
+                                      exercise.exercise?.toLowerCase().includes('pull-up') ||
+                                      exercise.exercise?.toLowerCase().includes('sit-up');
+                  
+                  return (
+                    <tr key={exercise.id || index} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
+                      <td className="px-4 py-2">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          isCardio ? 'bg-red-100 text-red-800' :
+                          isBodyweight ? 'bg-green-100 text-green-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {exercise.exercise_type || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.sets || 0)}</td>
+                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.reps || 0)}</td>
+                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.weight ? `${exercise.weight} lbs` : '-')}</td>
+                      <td className="px-4 py-2">{exercise.userweight || '-'} lbs</td>
+                      <td className="px-4 py-2">{exercise.time ? `${exercise.time} min` : '-'}</td>
+                      <td className="px-4 py-2">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
+                          exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
+                          exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
+                          exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
+                          exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
+                          exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {exercise.mood || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-600">
+                        {new Date(exercise.created_at || '').toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-2">
+                        <button
+                          onClick={() => deleteExercise(exercise.id || '')}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

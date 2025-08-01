@@ -10,6 +10,7 @@ import DataDisplay from './components/DataDisplay';
 import ExerciseTracker from './components/ExerciseTracker';
 import WorkoutAnalytics from './components/WorkoutAnalytics';
 import SimpleDataView from './components/SimpleDataView';
+import TestAnalytics from './components/TestAnalytics';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/home" element={<HomeScreen />} />
             <Route path="/tracker" element={<ExerciseTracker />} />
             <Route path="/analytics" element={<WorkoutAnalytics />} />
+            <Route path="/test-analytics" element={<TestAnalytics />} />
             <Route path="/data" element={<SimpleDataView />} />
             <Route path="/record" element={<RecordScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />

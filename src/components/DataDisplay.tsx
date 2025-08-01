@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DataService } from '../utils/dataService';
-import { QuickStats, WorkoutSummary } from '../types';
+import { QuickStats, WorkoutSummary, Exercise } from '../types';
+import { supabase } from '../utils/supabase';
 
 const DataDisplay: React.FC = () => {
   const [stats, setStats] = useState<QuickStats>({
@@ -14,6 +15,7 @@ const DataDisplay: React.FC = () => {
     totalTime: 0
   });
   const [recentWorkouts, setRecentWorkouts] = useState<WorkoutSummary[]>([]);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,16 +30,19 @@ const DataDisplay: React.FC = () => {
 
       console.log('Fetching comprehensive data...');
       
-      const [statsData, workoutsData] = await Promise.all([
+      const [statsData, workoutsData, exercisesData] = await Promise.all([
         DataService.getQuickStats(),
-        DataService.getRecentWorkouts(10)
+        DataService.getRecentWorkouts(10),
+        supabase.from('exercises').select('*').order('created_at', { ascending: false }).limit(50)
       ]);
 
       console.log('Stats data:', statsData);
       console.log('Workouts data:', workoutsData);
+      console.log('Exercises data:', exercisesData);
 
       setStats(statsData);
       setRecentWorkouts(workoutsData);
+      setExercises(exercisesData.data || []);
 
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -189,6 +194,101 @@ const DataDisplay: React.FC = () => {
                 )}
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Individual Exercise Details */}
+      <div>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">Individual Exercise Details</h3>
+        
+        {/* Exercise Type Info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <h4 className="text-blue-800 font-semibold mb-2">Exercise Type Column</h4>
+          <p className="text-blue-700 text-sm">
+            The <strong>"Exercise Type"</strong> column shows the category of each exercise (Strength, Cardio, Bodyweight, etc.) 
+            with color-coded badges for easy identification.
+          </p>
+        </div>
+        
+        {exercises.length === 0 ? (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-yellow-800">No individual exercises found in your database</p>
+            <p className="text-yellow-600 text-sm mt-1">Start recording exercises to see them here</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exercise</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exercise Type</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sets</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reps</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mood</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {exercises.map((exercise, index) => {
+                  const isCardio = exercise.exercise_type?.toLowerCase().includes('cardio') || 
+                                  exercise.exercise?.toLowerCase().includes('running') ||
+                                  exercise.exercise?.toLowerCase().includes('jogging') ||
+                                  exercise.exercise?.toLowerCase().includes('cycling') ||
+                                  exercise.exercise?.toLowerCase().includes('swimming');
+                  
+                  const isBodyweight = exercise.exercise_type?.toLowerCase().includes('bodyweight') ||
+                                      exercise.exercise?.toLowerCase().includes('push-up') ||
+                                      exercise.exercise?.toLowerCase().includes('pull-up') ||
+                                      exercise.exercise?.toLowerCase().includes('sit-up');
+                  
+                  return (
+                    <tr key={exercise.created_at || index} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm font-medium text-gray-900 capitalize">{exercise.exercise}</td>
+                      <td className="px-4 py-3 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          isCardio ? 'bg-red-100 text-red-800' :
+                          isBodyweight ? 'bg-green-100 text-green-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {exercise.exercise_type || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {isCardio ? '-' : (exercise.sets || 0)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {isCardio ? '-' : (exercise.reps || 0)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {isCardio ? '-' : (exercise.weight ? `${exercise.weight} lbs` : '-')}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {exercise.time ? `${exercise.time} min` : '-'}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
+                          exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
+                          exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
+                          exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
+                          exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
+                          exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {exercise.mood || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {new Date(exercise.created_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
