@@ -6,9 +6,11 @@ interface Exercise {
   user_id: number;
   user: string;
   exercise: string;
+  exercise_type: string;
   sets: number;
   reps: number;
   weight: number;
+  userweight: number;
   time: number;
   mood: string;
   created_at?: string;
@@ -21,9 +23,11 @@ const ExerciseTracker: React.FC = () => {
     user_id: 1,
     user: 'user1',
     exercise: '',
+    exercise_type: '',
     sets: 0,
     reps: 0,
     weight: 0,
+    userweight: 0,
     time: 0,
     mood: 'motivated'
   });
@@ -45,7 +49,7 @@ const ExerciseTracker: React.FC = () => {
       const { data, error } = await supabase
         .from('exercises')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('user_id', { ascending: false });
 
       if (error) {
         console.error('Error fetching exercises:', error);
@@ -117,9 +121,22 @@ const ExerciseTracker: React.FC = () => {
         return;
       }
 
+      // Create exercise data without user_id to avoid primary key conflict
+      const exerciseData = {
+        user: newExercise.user,
+        exercise: newExercise.exercise,
+        exercise_type: newExercise.exercise_type,
+        sets: newExercise.sets,
+        reps: newExercise.reps,
+        weight: newExercise.weight,
+        userweight: newExercise.userweight,
+        time: newExercise.time,
+        mood: newExercise.mood
+      };
+
       const { data, error } = await supabase
         .from('exercises')
-        .insert([newExercise])
+        .insert([exerciseData])
         .select();
 
       if (error) {
@@ -133,9 +150,11 @@ const ExerciseTracker: React.FC = () => {
         user_id: 1,
         user: 'user1',
         exercise: '',
+        exercise_type: '',
         sets: 0,
         reps: 0,
         weight: 0,
+        userweight: 0,
         time: 0,
         mood: 'motivated'
       });
@@ -215,7 +234,7 @@ const ExerciseTracker: React.FC = () => {
         {/* Add Exercise Form */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold mb-4">Add New Exercise</h2>
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Exercise</label>
               <input
@@ -224,6 +243,16 @@ const ExerciseTracker: React.FC = () => {
                 onChange={(e) => setNewExercise({...newExercise, exercise: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g., Bench Press"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Exercise Type</label>
+              <input
+                type="text"
+                value={newExercise.exercise_type}
+                onChange={(e) => setNewExercise({...newExercise, exercise_type: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., Strength"
               />
             </div>
             <div>
@@ -250,6 +279,15 @@ const ExerciseTracker: React.FC = () => {
                 type="number"
                 value={newExercise.weight}
                 onChange={(e) => setNewExercise({...newExercise, weight: parseInt(e.target.value) || 0})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">User Weight (lbs)</label>
+              <input
+                type="number"
+                value={newExercise.userweight}
+                onChange={(e) => setNewExercise({...newExercise, userweight: parseInt(e.target.value) || 0})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -293,9 +331,11 @@ const ExerciseTracker: React.FC = () => {
               <thead>
                 <tr className="bg-gray-50">
                   <th className="px-4 py-2 text-left">Exercise</th>
+                  <th className="px-4 py-2 text-left">Exercise Type</th>
                   <th className="px-4 py-2 text-left">Sets</th>
                   <th className="px-4 py-2 text-left">Reps</th>
                   <th className="px-4 py-2 text-left">Weight</th>
+                  <th className="px-4 py-2 text-left">User Weight</th>
                   <th className="px-4 py-2 text-left">Time</th>
                   <th className="px-4 py-2 text-left">Mood</th>
                   <th className="px-4 py-2 text-left">Date</th>
@@ -306,9 +346,11 @@ const ExerciseTracker: React.FC = () => {
                 {exercises.map((exercise, index) => (
                   <tr key={exercise.id || index} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
+                    <td className="px-4 py-2">{exercise.exercise_type || '-'}</td>
                     <td className="px-4 py-2">{exercise.sets}</td>
                     <td className="px-4 py-2">{exercise.reps}</td>
                     <td className="px-4 py-2">{exercise.weight} lbs</td>
+                    <td className="px-4 py-2">{exercise.userweight || '-'} lbs</td>
                     <td className="px-4 py-2">{exercise.time} min</td>
                     <td className="px-4 py-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${

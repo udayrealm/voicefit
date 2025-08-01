@@ -13,9 +13,11 @@ export interface Exercise {
   user: string; // String user identifier (text)
   created_at: string;
   exercise: string; // JSON field containing exercise name
+  exercise_type: string; // Exercise type/category
   sets: number;
   reps: number;
   weight: number;
+  userweight: number; // User's body weight
   time: number;
   mood: string; // JSON field containing mood
 }

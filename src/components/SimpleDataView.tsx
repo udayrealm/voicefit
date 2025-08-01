@@ -6,9 +6,11 @@ interface Exercise {
   user_id: number;
   user: string;
   exercise: string;
+  exercise_type: string;
   sets: number;
   reps: number;
   weight: number;
+  userweight: number;
   time: number;
   mood: string;
   created_at: string;
@@ -51,7 +53,7 @@ const SimpleDataView: React.FC = () => {
       const { data, error } = await supabase
         .from('exercises')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('user_id', { ascending: false });
 
       if (error) {
         setError(error.message);
@@ -109,9 +111,11 @@ const SimpleDataView: React.FC = () => {
               <th className="border border-gray-300 px-4 py-2 text-left">User ID</th>
               <th className="border border-gray-300 px-4 py-2 text-left">User</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Exercise</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">Exercise Type</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Sets</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Reps</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Weight</th>
+              <th className="border border-gray-300 px-4 py-2 text-left">User Weight</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Mood</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Created At</th>
@@ -124,9 +128,11 @@ const SimpleDataView: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">{exercise.user_id}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.user}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.exercise}</td>
+                <td className="border border-gray-300 px-4 py-2">{exercise.exercise_type || '-'}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.sets}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.reps}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.weight}</td>
+                <td className="border border-gray-300 px-4 py-2">{exercise.userweight || '-'}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.time}</td>
                 <td className="border border-gray-300 px-4 py-2">{exercise.mood}</td>
                 <td className="border border-gray-300 px-4 py-2 text-sm">{new Date(exercise.created_at).toLocaleString()}</td>

@@ -14,7 +14,7 @@ export class DataService {
         .from('exercises')
         .select('*')
         .eq('user', user) // Changed from 'user_id' to 'user'
-        .order('created_at', { ascending: false })
+        .order('user_id', { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) {
@@ -40,9 +40,11 @@ export class DataService {
           user_id: 1, // Keep numeric user_id for database compatibility
           user: user, // Add string user field
           exercise: 'Bench Press',
+          exercise_type: 'Strength',
           sets: 3,
           reps: 10,
           weight: 135,
+          userweight: 180,
           time: 45,
           mood: 'Strong',
           created_at: new Date().toISOString()
@@ -51,9 +53,11 @@ export class DataService {
           user_id: 1,
           user: user,
           exercise: 'Squats',
+          exercise_type: 'Strength',
           sets: 4,
           reps: 12,
           weight: 185,
+          userweight: 180,
           time: 60,
           mood: 'Good',
           created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // Yesterday
@@ -62,9 +66,11 @@ export class DataService {
           user_id: 1,
           user: user,
           exercise: 'Deadlift',
+          exercise_type: 'Strength',
           sets: 3,
           reps: 8,
           weight: 225,
+          userweight: 180,
           time: 90,
           mood: 'Excellent',
           created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
@@ -73,9 +79,11 @@ export class DataService {
           user_id: 1,
           user: user,
           exercise: 'Pull-ups',
+          exercise_type: 'Bodyweight',
           sets: 3,
           reps: 15,
           weight: 0, // Bodyweight
+          userweight: 180,
           time: 30,
           mood: 'Tired',
           created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() // 3 days ago
@@ -84,9 +92,11 @@ export class DataService {
           user_id: 1,
           user: user,
           exercise: 'Overhead Press',
+          exercise_type: 'Strength',
           sets: 3,
           reps: 8,
           weight: 95,
+          userweight: 180,
           time: 40,
           mood: 'Focused',
           created_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() // 4 days ago
@@ -95,9 +105,11 @@ export class DataService {
           user_id: 1,
           user: user,
           exercise: 'Bent Over Rows',
+          exercise_type: 'Strength',
           sets: 3,
           reps: 12,
           weight: 115,
+          userweight: 180,
           time: 50,
           mood: 'Focused',
           created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago

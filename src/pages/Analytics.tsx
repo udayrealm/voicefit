@@ -20,7 +20,7 @@ export const Analytics: React.FC = () => {
       const { data, error } = await supabase
         .from('workouts')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('user_id', { ascending: false });
 
       if (error) throw error;
       setWorkouts(data || []);

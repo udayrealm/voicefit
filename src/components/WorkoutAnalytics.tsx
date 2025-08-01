@@ -6,9 +6,11 @@ interface Exercise {
   user_id: number;
   user: string;
   exercise: string;
+  exercise_type: string;
   sets: number;
   reps: number;
   weight: number;
+  userweight: number;
   time: number;
   mood: string;
   created_at?: string;
@@ -56,7 +58,7 @@ const WorkoutAnalytics: React.FC = () => {
       const { data, error } = await supabase
         .from('exercises')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('user_id', { ascending: false });
 
       if (error) {
         console.error('Error fetching exercises:', error);
