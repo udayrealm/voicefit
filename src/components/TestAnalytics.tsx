@@ -325,7 +325,7 @@ const TestAnalytics: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">🧠 Test Analytics</h1>
+          <h1 className="text-3xl font-bold text-gray-800">🧠 Performance Trends</h1>
           <div className="flex space-x-2">
             <button
               onClick={() => setSelectedTimeframe('week')}

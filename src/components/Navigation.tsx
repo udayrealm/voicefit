@@ -10,9 +10,8 @@ const Navigation: React.FC = () => {
     { id: 'record', label: 'Record', icon: '🎤', path: '/record' },
     { id: 'tracker', label: 'Tracker', icon: '💪', path: '/tracker' },
     { id: 'analytics', label: 'Analytics', icon: '📊', path: '/analytics' },
-    { id: 'test-analytics', label: 'Test Analytics', icon: '🧠', path: '/test-analytics' },
+    { id: 'test-analytics', label: 'Performance Trends', icon: '🧠', path: '/test-analytics' },
     { id: 'data', label: 'Data', icon: '📋', path: '/data' },
-    { id: 'database', label: 'DB Test', icon: '🗄️', path: '/database' },
   ] as const;
 
   const getActiveTab = () => {
