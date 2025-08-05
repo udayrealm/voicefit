@@ -5,10 +5,16 @@ const RecordScreen: React.FC = () => {
   const { isRecording, audioBlob, startRecording, stopRecording, sendToWebhook } = useVoiceRecording();
   const [isSending, setIsSending] = useState(false);
   
-  const webhookURL = 'https://yousefakil1996.app.n8n.cloud/webhook-test/92fa5709-4d87-414a-93c3-77cbbbd07f57';
+  const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || '';
 
   const handleSendRecording = async () => {
     if (!audioBlob) return;
+
+    // Check if webhook URL is configured
+    if (!webhookURL || webhookURL.trim() === '') {
+      alert('n8n webhook URL is not configured. Please set VITE_N8N_WEBHOOK_URL in your environment variables.');
+      return;
+    }
 
     setIsSending(true);
     const success = await sendToWebhook(webhookURL);
@@ -48,10 +54,22 @@ const RecordScreen: React.FC = () => {
         </div>
       </div>
 
+      {/* Webhook Status */}
+      {(!webhookURL || webhookURL.trim() === '') && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <span className="text-yellow-600 mr-2">⚠️</span>
+            <p className="text-sm text-yellow-800">
+              n8n webhook URL not configured. Set VITE_N8N_WEBHOOK_URL in your .env file.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Send Recording Button */}
       <button
         onClick={handleSendRecording}
-        disabled={!audioBlob || isSending}
+        disabled={!audioBlob || isSending || !webhookURL || webhookURL.trim() === ''}
         className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-3 px-6 rounded-lg transition-colors"
       >
         {isSending ? 'Sending...' : 'Send Recording to n8n Webhook'}

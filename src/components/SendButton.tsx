@@ -7,6 +7,12 @@ const SendButton: React.FC<SendButtonProps> = ({ audioBlob, webhookURL }) => {
   const handleSendAudio = async () => {
     if (!audioBlob) return;
 
+    // Check if webhook URL is configured
+    if (!webhookURL || webhookURL.trim() === '') {
+      alert('n8n webhook URL is not configured. Please set VITE_N8N_WEBHOOK_URL in your environment variables.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
