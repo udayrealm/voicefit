@@ -4,7 +4,7 @@ import SendButton from '../components/SendButton';
 
 const LandingPage: React.FC = () => {
   const [recordedAudioBlob, setRecordedAudioBlob] = useState<Blob | null>(null);
-  const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || '';
+  const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://yousefakil1996.app.n8n.cloud/webhook-test/92fa5709-4d87-414a-93c3-77cbbbd07f57';
 
   const handleRecordingComplete = (audioBlob: Blob) => {
     setRecordedAudioBlob(audioBlob);

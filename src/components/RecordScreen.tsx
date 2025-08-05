@@ -5,7 +5,7 @@ const RecordScreen: React.FC = () => {
   const { isRecording, audioBlob, startRecording, stopRecording, sendToWebhook } = useVoiceRecording();
   const [isSending, setIsSending] = useState(false);
   
-  const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || '';
+  const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://yousefakil1996.app.n8n.cloud/webhook-test/92fa5709-4d87-414a-93c3-77cbbbd07f57';
 
   const handleSendRecording = async () => {
     if (!audioBlob) return;
