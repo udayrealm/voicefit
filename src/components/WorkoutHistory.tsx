@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { DataService } from '../utils/dataService';
 import { WorkoutSummary, WorkoutSession } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const WorkoutHistory: React.FC = () => {
+  const { user } = useAuth();
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSession, setSelectedSession] = useState<WorkoutSummary | null>(null);
 
   useEffect(() => {
-    fetchWorkoutHistory();
-  }, []);
+    if (user) {
+      fetchWorkoutHistory();
+    }
+  }, [user]);
 
   const fetchWorkoutHistory = async () => {
     try {
       setLoading(true);
       const history = await DataService.getRecentWorkouts(20);
+      console.log(`Fetched workout history for user ${user?.username}:`, history);
       setWorkoutHistory(history);
     } catch (error) {
       console.error('Error fetching workout history:', error);
@@ -46,17 +51,41 @@ const WorkoutHistory: React.FC = () => {
     return moodMap[mood.toLowerCase()] || '😐';
   };
 
+  if (!user) {
+    return (
+      <div className="px-4 py-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h3 className="text-yellow-800 font-bold mb-2">Authentication Required</h3>
+          <p className="text-yellow-700">Please log in to view your workout history.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading workout history...</div>
+        <div className="text-gray-500">Loading your workout history...</div>
       </div>
     );
   }
 
   return (
     <div className="px-4 py-6 space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Workout History</h2>
+      {/* User Header */}
+      <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg p-6 text-white mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+            <span className="text-xl font-bold">
+              {user.username.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold">📅 {user.username}'s Workout History</h2>
+            <p className="text-orange-100">Your complete fitness journey and progress</p>
+          </div>
+        </div>
+      </div>
 
       {workoutHistory.length === 0 ? (
         <div className="text-center py-8">
@@ -71,7 +100,7 @@ const WorkoutHistory: React.FC = () => {
           {workoutHistory.map((workout) => (
             <div key={workout.session.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               {/* Session Header */}
-              <div className="p-4 border-b border-gray-100">
+              <div className="p-4">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-semibold text-gray-800 text-lg">
@@ -112,7 +141,7 @@ const WorkoutHistory: React.FC = () => {
                 </div>
 
                 {/* Mood and Notes */}
-                <div className="flex items-center justify-between mt-3">
+                <div className="flex justify-between items-center mt-3">
                   <div className="flex items-center space-x-2">
                     <span className="text-lg">
                       {getMoodEmoji(workout.session.mood_pre)}
@@ -167,31 +196,31 @@ const WorkoutHistory: React.FC = () => {
       {/* Summary Stats */}
       {workoutHistory.length > 0 && (
         <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <h3 className="font-semibold text-gray-800 mb-3">History Summary</h3>
+          <h3 className="font-semibold text-gray-800 mb-3">Your History Summary</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
                 {workoutHistory.length}
               </div>
-              <div className="text-sm text-gray-600">Total Sessions</div>
+              <div className="text-sm text-gray-600">Your Total Sessions</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
                 {workoutHistory.reduce((sum, w) => sum + w.totalVolume, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Volume (lbs)</div>
+              <div className="text-sm text-gray-600">Your Total Volume (lbs)</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">
                 {workoutHistory.reduce((sum, w) => sum + w.totalSets, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Sets</div>
+              <div className="text-sm text-gray-600">Your Total Sets</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">
                 {workoutHistory.reduce((sum, w) => sum + w.totalReps, 0)}
               </div>
-              <div className="text-sm text-gray-600">Total Reps</div>
+              <div className="text-sm text-gray-600">Your Total Reps</div>
             </div>
           </div>
         </div>

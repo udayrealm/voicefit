@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import WorkoutHistory from './WorkoutHistory';
 import { DataService } from '../utils/dataService';
 import { QuickStats } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProfileScreen: React.FC = () => {
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<'profile' | 'history'>('profile');
   const [stats, setStats] = useState<QuickStats>({
     totalSets: 0,
@@ -27,6 +29,10 @@ const ProfileScreen: React.FC = () => {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -62,13 +68,17 @@ const ProfileScreen: React.FC = () => {
           {/* Profile Header */}
           <div className="bg-white rounded-lg p-6 border border-gray-200">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-gray-600 text-2xl">👤</span>
+              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-2xl font-bold">
+                  {user?.username?.charAt(0).toUpperCase() || 'U'}
+                </span>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-800">VoiceFit User</h3>
-                <p className="text-gray-600">Fitness Enthusiast</p>
-                <p className="text-sm text-gray-500">Member since 2024</p>
+                <h3 className="text-xl font-bold text-gray-800">{user?.username || 'VoiceFit User'}</h3>
+                <p className="text-gray-600">{user?.email || 'user@example.com'}</p>
+                <p className="text-sm text-gray-500">
+                  Member since {user?.created_at ? new Date(user.created_at).getFullYear() : '2024'}
+                </p>
               </div>
             </div>
           </div>
@@ -91,9 +101,9 @@ const ProfileScreen: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-blue-500 text-lg">🎯</span>
                 </div>
-                <div className="text-2xl font-bold text-gray-800">{stats.totalSessions}</div>
-                <div className="text-sm text-gray-600">sessions</div>
-                <div className="text-xs text-gray-500 mt-1">Total Sessions</div>
+                <div className="text-2xl font-bold text-gray-800">{stats.totalWorkouts}</div>
+                <div className="text-sm text-gray-600">workouts</div>
+                <div className="text-xs text-gray-500 mt-1">Total Workouts</div>
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -116,9 +126,48 @@ const ProfileScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Settings Section */}
+          {/* Account Settings */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Settings</h3>
+            <h3 className="text-lg font-semibold text-gray-800">Account Settings</h3>
+            
+            <div className="bg-white rounded-lg border border-gray-200">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-600">👤</span>
+                    <span className="text-gray-800">Edit Profile</span>
+                  </div>
+                  <span className="text-gray-400">&gt;</span>
+                </div>
+              </div>
+              
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-600">🔒</span>
+                    <span className="text-gray-800">Change Password</span>
+                  </div>
+                  <span className="text-gray-400">&gt;</span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-600">🎤</span>
+                    <span className="text-gray-800">Voice Recording</span>
+                  </div>
+                  <div className="w-12 h-6 bg-blue-500 rounded-full relative">
+                    <div className="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* App Settings */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800">App Settings</h3>
             
             <div className="bg-white rounded-lg border border-gray-200">
               <div className="p-4 border-b border-gray-100">
@@ -136,11 +185,11 @@ const ProfileScreen: React.FC = () => {
               <div className="p-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <span className="text-gray-600">🎤</span>
-                    <span className="text-gray-800">Voice Recording</span>
+                    <span className="text-gray-600">🌙</span>
+                    <span className="text-gray-800">Dark Mode</span>
                   </div>
-                  <div className="w-12 h-6 bg-blue-500 rounded-full relative">
-                    <div className="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                  <div className="w-12 h-6 bg-gray-300 rounded-full relative">
+                    <div className="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5"></div>
                   </div>
                 </div>
               </div>
@@ -148,11 +197,11 @@ const ProfileScreen: React.FC = () => {
               <div className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <span className="text-gray-600">🌙</span>
-                    <span className="text-gray-800">Dark Mode</span>
+                    <span className="text-gray-600">📊</span>
+                    <span className="text-gray-800">Data Sync</span>
                   </div>
-                  <div className="w-12 h-6 bg-gray-300 rounded-full relative">
-                    <div className="w-5 h-5 bg-white rounded-full absolute left-0.5 top-0.5"></div>
+                  <div className="w-12 h-6 bg-blue-500 rounded-full relative">
+                    <div className="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
                   </div>
                 </div>
               </div>
@@ -254,6 +303,22 @@ const ProfileScreen: React.FC = () => {
                   <span className="text-gray-400">&gt;</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Logout Button */}
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button
+                onClick={handleLogout}
+                className="w-full p-4 text-left flex items-center justify-between text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <div className="flex items-center space-x-3">
+                  <span>🚪</span>
+                  <span>Logout</span>
+                </div>
+                <span className="text-gray-400">&gt;</span>
+              </button>
             </div>
           </div>
         </>

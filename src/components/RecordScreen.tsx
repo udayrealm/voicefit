@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useVoiceRecording } from '../hooks/useVoiceRecording';
+import { useAuth } from '../contexts/AuthContext';
 
 const RecordScreen: React.FC = () => {
   const { isRecording, audioBlob, startRecording, stopRecording, sendToWebhook } = useVoiceRecording();
   const [isSending, setIsSending] = useState(false);
+  const { user } = useAuth();
   
   const webhookURL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://yousefakil1996.app.n8n.cloud/webhook-test/92fa5709-4d87-414a-93c3-77cbbbd07f57';
 
@@ -16,12 +18,22 @@ const RecordScreen: React.FC = () => {
       return;
     }
 
+    // Check if user is logged in
+    if (!user) {
+      alert('Please log in to record your workout.');
+      return;
+    }
+
     setIsSending(true);
-    const success = await sendToWebhook(webhookURL);
+    const success = await sendToWebhook(webhookURL, {
+      id: user.id,
+      username: user.username,
+      email: user.email
+    });
     setIsSending(false);
 
     if (success) {
-      alert('Workout recorded successfully!');
+      alert(`Workout recorded successfully for ${user.username}!`);
     } else {
       alert('Failed to send recording. Please try again.');
     }

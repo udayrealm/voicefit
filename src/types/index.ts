@@ -9,8 +9,8 @@ export interface SendButtonProps {
 
 // Database schema types based on the actual database structure
 export interface Exercise {
-  user_id: number; // Numeric user ID (int8)
-  user: string; // String user identifier (text)
+  user_id: string; // UUID user ID (proper foreign key)
+  user?: string; // String user identifier (text) - optional for backward compatibility
   created_at: string;
   exercise: string; // JSON field containing exercise name
   exercise_type: string; // Exercise type/category
@@ -63,4 +63,29 @@ export interface WorkoutSummary {
   totalSets: number;
   totalReps: number;
   totalVolume: number;
+}
+
+// User authentication types
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface SignupCredentials {
+  username: string;
+  email: string;
+  password: string;
 }
