@@ -9,6 +9,7 @@ export interface SendButtonProps {
 
 // Database schema types based on the actual database structure
 export interface Exercise {
+  id?: string; // UUID primary key
   user_id: string; // UUID user ID (proper foreign key)
   user?: string; // String user identifier (text) - optional for backward compatibility
   created_at: string;
@@ -20,6 +21,7 @@ export interface Exercise {
   userweight: number; // User's body weight
   time: number;
   mood: string; // JSON field containing mood
+  whatsaid?: string; // What the user said during the workout
 }
 
 export interface ExerciseDefinition {

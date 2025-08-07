@@ -115,8 +115,19 @@ const RecordScreen: React.FC = () => {
         <h3 className="font-bold text-gray-800 mb-4">Example Recording</h3>
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <p className="text-sm text-gray-700 italic">
-            "I did bench press, 3 sets of 10 reps at 135 pounds, then moved to dumbbell rows, 
-            3 sets of 12 reps at 45 pounds each arm. I felt strong today and my form was good."
+            "I did bench press, 3 sets of 10 reps at 135 pounds, I felt strong today."
+          </p>
+          <p className="text-sm text-gray-700 italic mt-2">
+            OR
+          </p>
+          <p className="text-sm text-gray-700 italic">
+            "I ran 3 miles in 28 minutes at a steady pace, felt great"
+          </p>
+          <p className="text-sm text-gray-700 italic mt-2">
+            OR
+          </p>
+          <p className="text-sm text-gray-700 italic">
+            "Did 45 minutes of yoga, focused on balancing feeling relaxed"
           </p>
         </div>
       </div>

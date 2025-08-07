@@ -158,37 +158,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onSwitchToSignup }) => {
             </button>
           </p>
         </div>
-
-        {/* Demo credentials */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600 mb-2">Demo credentials:</p>
-          <div className="text-xs text-gray-500 space-y-1">
-            <p>Username: <span className="font-mono">demo</span> | Password: <span className="font-mono">password123</span></p>
-            <p>Username: <span className="font-mono">test</span> | Password: <span className="font-mono">test123</span></p>
-          </div>
-          <div className="mt-3 space-y-2">
-            <button
-              type="button"
-              onClick={() => {
-                setCredentials({ username: 'demo', password: 'password123' });
-                console.log('🔐 LoginScreen: Auto-filled demo credentials');
-              }}
-              className="w-full text-xs bg-blue-100 text-blue-700 py-1 px-2 rounded hover:bg-blue-200"
-            >
-              Fill Demo Credentials
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setCredentials({ username: 'test', password: 'test123' });
-                console.log('🔐 LoginScreen: Auto-filled test credentials');
-              }}
-              className="w-full text-xs bg-green-100 text-green-700 py-1 px-2 rounded hover:bg-green-200"
-            >
-              Fill Test Credentials
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

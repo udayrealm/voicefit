@@ -955,59 +955,59 @@ const TestAnalytics: React.FC = () => {
         </div>
 
         {/* Quick Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-2xl font-bold text-blue-600">{strengthMetrics.totalVolume.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-blue-600">{strengthMetrics.totalVolume.toLocaleString()}</div>
                 <div className="text-sm text-gray-600">Total Volume</div>
-              </div>
+            </div>
               <div className="text-3xl">💪</div>
             </div>
             <div className="mt-2 text-xs text-blue-500">
               {strengthMetrics.strengthGains.improvementRate > 0 ? '↗️ Improving' : '📊 Stable'}
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
-            <div className="flex items-center justify-between">
-              <div>
+                <div className="flex items-center justify-between">
+                  <div>
                 <div className="text-2xl font-bold text-green-600">{cardioMetrics.totalTime}</div>
                 <div className="text-sm text-gray-600">Total Time (min)</div>
-              </div>
+                  </div>
               <div className="text-3xl">⏱️</div>
-            </div>
+                </div>
             <div className="mt-2 text-xs text-green-500">
               {cardioMetrics.consistencyStreak > 3 ? '🔥 Consistent' : 'Keep going!'}
-            </div>
-          </div>
-          
+                </div>
+              </div>
+              
           <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-            <div className="flex items-center justify-between">
-              <div>
+                <div className="flex items-center justify-between">
+                  <div>
                 <div className="text-2xl font-bold text-purple-600">{strengthMetrics.strengthGains.avgReps}</div>
                 <div className="text-sm text-gray-600">Avg Reps</div>
-              </div>
-              <div className="text-3xl">📊</div>
-            </div>
+                  </div>
+                  <div className="text-3xl">📊</div>
+                </div>
             <div className="mt-2 text-xs text-purple-500">
               {strengthMetrics.strengthGains.avgReps > 8 ? '💪 Endurance' : '💪 Strength'}
             </div>
-          </div>
-          
+              </div>
+              
           <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
-            <div className="flex items-center justify-between">
-              <div>
+                <div className="flex items-center justify-between">
+                  <div>
                 <div className="text-2xl font-bold text-orange-600">{exercises.length}</div>
                 <div className="text-sm text-gray-600">Total Sessions</div>
-              </div>
+                  </div>
               <div className="text-3xl">📈</div>
             </div>
             <div className="mt-2 text-xs text-orange-500">
               {exercises.length > 10 ? '🎯 Consistent' : 'Getting started'}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
         {/* Dynamic Tips */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -1018,12 +1018,12 @@ const TestAnalytics: React.FC = () => {
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-2xl">{tip.icon}</span>
                   <span className="font-semibold text-gray-800 capitalize">{tip.type}</span>
-                </div>
+                        </div>
                 <p className="text-sm text-gray-700">{tip.message}</p>
+                      </div>
+                    ))}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
 
         {/* Performance Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1035,40 +1035,40 @@ const TestAnalytics: React.FC = () => {
               <div className="text-2xl">🏋️</div>
             </div>
             
-            <div className="space-y-4">
+                <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Best Exercise</span>
                 <span className="font-semibold text-blue-600 capitalize">{strengthMetrics.strengthGains.bestExercise}</span>
-              </div>
+                    </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Most Improved</span>
                 <span className="font-semibold text-green-600 capitalize">{strengthMetrics.strengthGains.mostImproved}</span>
-              </div>
+                    </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Max Weight</span>
                 <span className="font-semibold text-purple-600">{strengthMetrics.maxWeight} lbs</span>
-              </div>
-              
+                  </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Weekly Growth</span>
                 <span className={`font-semibold ${getProgressColor(strengthMetrics.strengthGains.weeklyGrowth)}`}>
                   {getProgressEmoji(strengthMetrics.strengthGains.weeklyGrowth)} {strengthMetrics.strengthGains.weeklyGrowth}%
-                </span>
-              </div>
-              
+                      </span>
+                  </div>
+
               {strengthMetrics.progressionData.length > 0 && (
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <div className="text-sm font-medium text-blue-800 mb-2">Recent Achievement</div>
                   <div className="text-xs text-blue-600">
                     {strengthMetrics.progressionData[strengthMetrics.progressionData.length - 1]?.exercise} - 
                     {strengthMetrics.progressionData[strengthMetrics.progressionData.length - 1]?.volume} lbs
+                    </div>
                   </div>
-                </div>
               )}
-            </div>
-          </div>
+                </div>
+              </div>
 
           {/* Endurance & Mobility Card */}
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -1076,36 +1076,36 @@ const TestAnalytics: React.FC = () => {
               <h2 className="text-xl font-bold text-gray-800">💨 Endurance & Mobility</h2>
               <div className="text-2xl">🏃</div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Favorite Activity</span>
                 <span className="font-semibold text-green-600 capitalize">{cardioMetrics.mostFrequentType}</span>
-              </div>
+                      </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Cardio Sessions</span>
                 <span className="font-semibold text-red-600">{cardioMetrics.cardioFrequency}</span>
-              </div>
+                        </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Endurance Score</span>
                 <span className={`font-semibold ${getProgressColor(cardioMetrics.cardioInsights.enduranceScore)}`}>
                   {getProgressEmoji(cardioMetrics.cardioInsights.enduranceScore)} {cardioMetrics.cardioInsights.enduranceScore}%
                 </span>
-              </div>
+                        </div>
               
               {cardioMetrics.longestSession && (
                 <div className="mt-4 p-3 bg-green-50 rounded-lg">
                   <div className="text-sm font-medium text-green-800 mb-2">Longest Session</div>
                   <div className="text-xs text-green-600">
                     {cardioMetrics.longestSession.exercise} - {cardioMetrics.longestSession.time} min
-                  </div>
-                </div>
+                        </div>
+                      </div>
               )}
-            </div>
-          </div>
-        </div>
+                      </div>
+                    </div>
+              </div>
 
         {/* Exercise Type Analytics */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1118,7 +1118,7 @@ const TestAnalytics: React.FC = () => {
             ) : (
               <p className="text-gray-500 text-sm">No strength data available</p>
             )}
-          </div>
+            </div>
 
           {/* Cardio Time Distribution */}
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -1145,61 +1145,61 @@ const TestAnalytics: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Total Reps</span>
                 <span className="font-semibold text-orange-600">{coreMetrics.totalReps}</span>
-              </div>
+            </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Most Performed</span>
                 <span className="font-semibold text-green-600 capitalize">{coreMetrics.mostPerformed}</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
+          </div>
+
+                <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Avg Duration</span>
                 <span className="font-semibold text-blue-600">{coreMetrics.avgDuration} min</span>
               </div>
               
-              <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Weekly Sessions</span>
                 <span className="font-semibold text-purple-600">{coreMetrics.weeklyCoreSessions}</span>
-              </div>
-            </div>
-          </div>
+                    </div>
+                  </div>
+                </div>
 
           {/* Mobility & Recovery */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-gray-800">🧘 Mobility & Recovery</h3>
               <div className="text-xl">🧘</div>
-            </div>
-            
+              </div>
+              
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Total Time</span>
                 <span className="font-semibold text-green-600">{mobilityMetrics.totalTime} min</span>
               </div>
               
-              <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Sessions</span>
                 <span className="font-semibold text-blue-600">{mobilityMetrics.mobilityFrequency}</span>
-              </div>
-              
+            </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Avg Mood</span>
                 <span className="font-semibold text-purple-600">
                   {mobilityMetrics.averageMoodAfterMobility > 0 ? Math.round(mobilityMetrics.averageMoodAfterMobility) : 'N/A'}
-                </span>
+                          </span>
               </div>
-              
+
               {mobilityMetrics.bestMobilityDay && (
                 <div className="mt-3 p-2 bg-purple-50 rounded">
                   <div className="text-xs font-medium text-purple-800">Best Day</div>
                   <div className="text-xs text-purple-600">
                     {mobilityMetrics.bestMobilityDay.date} - {mobilityMetrics.bestMobilityDay.mood}
+                    </div>
                   </div>
-                </div>
               )}
+                    </div>
+              </div>
             </div>
-          </div>
-        </div>
 
         {/* Mood Trends & Insights */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1212,59 +1212,59 @@ const TestAnalytics: React.FC = () => {
             ) : (
               <p className="text-gray-500 text-sm">No mood data available</p>
             )}
-          </div>
+            </div>
 
           {/* Activity Heatmap */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-bold text-gray-800 mb-4">📅 Activity Heatmap</h3>
             <ActivityHeatmap exercises={exercises} />
             <div className="mt-4 flex items-center justify-center space-x-4 text-xs">
-              <div className="flex items-center">
+                        <div className="flex items-center">
                 <div className="w-3 h-3 bg-gray-200 rounded mr-1"></div>
                 <span>No Activity</span>
-              </div>
+                        </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-300 rounded mr-1"></div>
                 <span>Light</span>
-              </div>
+                          </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-400 rounded mr-1"></div>
                 <span>Moderate</span>
-              </div>
+                        </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-500 rounded mr-1"></div>
                 <span>Heavy</span>
+                      </div>
               </div>
             </div>
           </div>
-        </div>
 
         {/* Wellness & Mood Card */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-800">😃 Wellness & Mood</h2>
             <div className="text-2xl">🧠</div>
-          </div>
+                  </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div className="text-center p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
               <div className="text-2xl mb-2">🧘</div>
               <div className="text-lg font-bold text-green-600">{moodMetrics.wellnessInsights.stressRelief}%</div>
               <div className="text-sm text-gray-600">Stress Relief</div>
-            </div>
+                  </div>
             
             <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
               <div className="text-2xl mb-2">⚡</div>
               <div className="text-lg font-bold text-blue-600">{moodMetrics.wellnessInsights.energyLevels}%</div>
               <div className="text-sm text-gray-600">Energy Boost</div>
-            </div>
+                </div>
             
             <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg">
               <div className="text-2xl mb-2">📈</div>
               <div className="text-lg font-bold text-purple-600">{moodMetrics.wellnessInsights.moodImprovement}%</div>
               <div className="text-sm text-gray-600">Mood Progress</div>
-            </div>
           </div>
+        </div>
 
           {/* Best Day Highlight */}
           {moodMetrics.bestDay !== 'None' && (
@@ -1272,11 +1272,11 @@ const TestAnalytics: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <span className="text-2xl">⭐</span>
                 <span className="font-semibold text-yellow-800">Best Day</span>
-              </div>
+                    </div>
               <p className="text-sm text-yellow-700 mt-1">
                 Your most productive day was {moodMetrics.bestDay} - try to replicate that energy!
               </p>
-            </div>
+                  </div>
           )}
           
           {moodMetrics.wellnessInsights.averageMood === 'Excellent' && (
@@ -1294,9 +1294,9 @@ const TestAnalytics: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <span className="text-2xl">👍</span>
                 <span className="font-semibold text-blue-800">Good Foundation</span>
-              </div>
+                        </div>
               <p className="text-sm text-blue-700 mt-1">You're on the right track. Try adding more variety to boost your mood further.</p>
-            </div>
+                      </div>
           )}
           
           {moodMetrics.wellnessInsights.averageMood === 'Needs Improvement' && (
@@ -1304,9 +1304,9 @@ const TestAnalytics: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <span className="text-2xl">💪</span>
                 <span className="font-semibold text-orange-800">Room for Growth</span>
-              </div>
+                  </div>
               <p className="text-sm text-orange-700 mt-1">Focus on activities that energize you and consider shorter, more frequent sessions.</p>
-            </div>
+                  </div>
           )}
         </div>
 
@@ -1369,4 +1369,4 @@ const TestAnalytics: React.FC = () => {
   );
 };
 
-export default TestAnalytics;
+export default TestAnalytics; 
