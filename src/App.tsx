@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Navigation from './components/Navigation';
+import FeedbackPage from './components/FeedbackPage';
 import HomeScreen from './components/HomeScreen';
 import RecordScreen from './components/RecordScreen';
 import ProfileScreen from './components/ProfileScreen';
@@ -75,6 +76,7 @@ const AppContent: React.FC = () => {
           <Route path="/test-analytics" element={<TestAnalytics />} />
           <Route path="/record" element={<RecordScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
         </Routes>
       </div>
       <Navigation />

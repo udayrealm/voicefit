@@ -359,91 +359,152 @@ const ExerciseTracker: React.FC = () => {
           </button>
         </div>
 
-        {/* Exercises List */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Your Recent Exercises</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="px-4 py-2 text-left">Exercise</th>
-                  <th className="px-4 py-2 text-left">Exercise Type</th>
-                  <th className="px-4 py-2 text-left">Sets</th>
-                  <th className="px-4 py-2 text-left">Reps</th>
-                  <th className="px-4 py-2 text-left">Weight</th>
-                  <th className="px-4 py-2 text-left">User Weight</th>
-                  <th className="px-4 py-2 text-left">Time</th>
-                  <th className="px-4 py-2 text-left">Mood</th>
-                  <th className="px-4 py-2 text-left">Date</th>
-                  <th className="px-4 py-2 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {exercises.map((exercise, index) => {
-                  const isCardio = exercise.exercise_type?.toLowerCase().includes('cardio') || 
-                                  exercise.exercise?.toLowerCase().includes('running') ||
-                                  exercise.exercise?.toLowerCase().includes('jogging') ||
-                                  exercise.exercise?.toLowerCase().includes('cycling') ||
-                                  exercise.exercise?.toLowerCase().includes('swimming');
-                  
-                  const isBodyweight = exercise.exercise_type?.toLowerCase().includes('bodyweight') ||
-                                      exercise.exercise?.toLowerCase().includes('push-up') ||
-                                      exercise.exercise?.toLowerCase().includes('pull-up') ||
-                                      exercise.exercise?.toLowerCase().includes('sit-up');
-                  
-                  return (
-                    <tr key={exercise.id || index} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
-                      <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          isCardio ? 'bg-red-100 text-red-800' :
-                          isBodyweight ? 'bg-green-100 text-green-800' :
-                          'bg-blue-100 text-blue-800'
-                        }`}>
-                          {exercise.exercise_type || '-'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.sets || 0)}</td>
-                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.reps || 0)}</td>
-                      <td className="px-4 py-2">{isCardio ? '-' : (exercise.weight ? `${exercise.weight} lbs` : '-')}</td>
-                      <td className="px-4 py-2">{exercise.userweight || '-'} lbs</td>
-                      <td className="px-4 py-2">{exercise.time ? `${exercise.time} min` : '-'}</td>
-                      <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
-                          exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
-                          exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
-                          exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
-                          exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
-                          exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {exercise.mood || '-'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-600">
-                        {new Date(exercise.created_at || '').toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => deleteExercise(exercise.id || '')}
-                          className="text-red-600 hover:text-red-800 text-sm"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          {exercises.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              No exercises found yet. Add your first workout to get started!
-            </div>
-          )}
-        </div>
+                 {/* Exercises List */}
+         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+           <h2 className="text-xl font-semibold mb-4">Your Recent Exercises</h2>
+           <div className="overflow-x-auto">
+             <table className="min-w-full table-auto">
+               <thead>
+                 <tr className="bg-gray-50">
+                   <th className="px-4 py-2 text-left">Exercise</th>
+                   <th className="px-4 py-2 text-left">Exercise Type</th>
+                   <th className="px-4 py-2 text-left">Sets</th>
+                   <th className="px-4 py-2 text-left">Reps</th>
+                   <th className="px-4 py-2 text-left">Weight</th>
+                   <th className="px-4 py-2 text-left">User Weight</th>
+                   <th className="px-4 py-2 text-left">Time</th>
+                   <th className="px-4 py-2 text-left">Mood</th>
+                   <th className="px-4 py-2 text-left">Date</th>
+                   <th className="px-4 py-2 text-left">Actions</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {exercises.map((exercise, index) => {
+                   const isCardio = exercise.exercise_type?.toLowerCase().includes('cardio') || 
+                                   exercise.exercise?.toLowerCase().includes('running') ||
+                                   exercise.exercise?.toLowerCase().includes('jogging') ||
+                                   exercise.exercise?.toLowerCase().includes('cycling') ||
+                                   exercise.exercise?.toLowerCase().includes('swimming');
+                   
+                   const isBodyweight = exercise.exercise_type?.toLowerCase().includes('bodyweight') ||
+                                       exercise.exercise?.toLowerCase().includes('push-up') ||
+                                       exercise.exercise?.toLowerCase().includes('pull-up') ||
+                                       exercise.exercise?.toLowerCase().includes('sit-up');
+                   
+                   return (
+                     <tr key={exercise.id || index} className="border-b hover:bg-gray-50">
+                       <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
+                       <td className="px-4 py-2">
+                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                           isCardio ? 'bg-red-100 text-red-800' :
+                           isBodyweight ? 'bg-green-100 text-green-800' :
+                           'bg-blue-100 text-blue-800'
+                         }`}>
+                           {exercise.exercise_type || '-'}
+                         </span>
+                       </td>
+                       <td className="px-4 py-2">{isCardio ? '-' : (exercise.sets || 0)}</td>
+                       <td className="px-4 py-2">{isCardio ? '-' : (exercise.reps || 0)}</td>
+                       <td className="px-4 py-2">{isCardio ? '-' : (exercise.weight ? `${exercise.weight} lbs` : '-')}</td>
+                       <td className="px-4 py-2">{exercise.userweight || '-'} lbs</td>
+                       <td className="px-4 py-2">{exercise.time ? `${exercise.time} min` : '-'}</td>
+                       <td className="px-4 py-2">
+                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                           exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
+                           exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
+                           exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
+                           exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
+                           exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
+                           exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
+                           'bg-gray-100 text-gray-800'
+                         }`}>
+                           {exercise.mood || '-'}
+                         </span>
+                       </td>
+                       <td className="px-4 py-2 text-sm text-gray-600">
+                         {new Date(exercise.created_at || '').toLocaleDateString()}
+                       </td>
+                       <td className="px-4 py-2">
+                         <button
+                           onClick={() => deleteExercise(exercise.id || '')}
+                           className="text-red-600 hover:text-red-800 text-sm"
+                         >
+                           Delete
+                         </button>
+                       </td>
+                     </tr>
+                   );
+                 })}
+               </tbody>
+             </table>
+           </div>
+           {exercises.length === 0 && (
+             <div className="text-center py-8 text-gray-500">
+               No exercises found yet. Add your first workout to get started!
+             </div>
+           )}
+         </div>
+
+         {/* Voice Recordings Table */}
+         <div className="bg-white rounded-lg shadow-md p-6">
+           <h2 className="text-xl font-semibold mb-4">🎤 Your Voice Recordings</h2>
+           <div className="overflow-x-auto">
+             <table className="min-w-full table-auto">
+               <thead>
+                 <tr className="bg-gray-50">
+                   <th className="px-4 py-2 text-left">Exercise</th>
+                   <th className="px-4 py-2 text-left">What You Said</th>
+                   <th className="px-4 py-2 text-left">Mood</th>
+                   <th className="px-4 py-2 text-left">Date</th>
+                   <th className="px-4 py-2 text-left">Actions</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {exercises.filter(exercise => exercise.whatsaid && exercise.whatsaid.trim() !== '').map((exercise, index) => (
+                   <tr key={`voice-${exercise.id || index}`} className="border-b hover:bg-gray-50">
+                     <td className="px-4 py-2 font-medium capitalize">{exercise.exercise}</td>
+                     <td className="px-4 py-2 text-sm text-gray-800 max-w-md">
+                       <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                         <p className="italic">"{exercise.whatsaid}"</p>
+                       </div>
+                     </td>
+                     <td className="px-4 py-2">
+                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                         exercise.mood === 'motivated' ? 'bg-green-100 text-green-800' :
+                         exercise.mood === 'tired' ? 'bg-red-100 text-red-800' :
+                         exercise.mood === 'focused' ? 'bg-blue-100 text-blue-800' :
+                         exercise.mood === 'energized' ? 'bg-yellow-100 text-yellow-800' :
+                         exercise.mood === 'strong' ? 'bg-purple-100 text-purple-800' :
+                         exercise.mood === 'exhausted' ? 'bg-red-100 text-red-800' :
+                         'bg-gray-100 text-gray-800'
+                       }`}>
+                         {exercise.mood || '-'}
+                       </span>
+                     </td>
+                     <td className="px-4 py-2 text-sm text-gray-600">
+                       {new Date(exercise.created_at || '').toLocaleDateString()}
+                     </td>
+                     <td className="px-4 py-2">
+                       <button
+                         onClick={() => deleteExercise(exercise.id || '')}
+                         className="text-red-600 hover:text-red-800 text-sm"
+                       >
+                         Delete
+                       </button>
+                     </td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
+           </div>
+           {exercises.filter(exercise => exercise.whatsaid && exercise.whatsaid.trim() !== '').length === 0 && (
+             <div className="text-center py-8 text-gray-500">
+               <div className="text-4xl mb-4">🎤</div>
+               <h3 className="text-lg font-semibold mb-2">No voice recordings yet</h3>
+               <p className="text-gray-600">Record your workouts using voice to see them here!</p>
+             </div>
+           )}
+         </div>
       </div>
     </div>
   );
