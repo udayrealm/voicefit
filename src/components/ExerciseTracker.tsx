@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
-
-interface Exercise {
-  id?: string;
-  user_id: number;
-  user: string;
-  exercise: string;
-  exercise_type: string;
-  sets: number;
-  reps: number;
-  weight: number;
-  userweight: number;
-  time: number;
-  mood: string;
-  created_at?: string;
-}
+import { useAuth } from '../contexts/AuthContext';
+import { DataService } from '../utils/dataService';
+import { Exercise } from '../types';
 
 const ExerciseTracker: React.FC = () => {
+  const { user } = useAuth();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [newExercise, setNewExercise] = useState<Partial<Exercise>>({
-    user_id: 1,
-    user: 'user1',
     exercise: '',
     exercise_type: '',
     sets: 0,
@@ -40,24 +27,18 @@ const ExerciseTracker: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchExercises();
-  }, []);
+    if (user) {
+      fetchExercises();
+    }
+  }, [user]);
 
   const fetchExercises = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('exercises')
-        .select('*')
-        .order('user_id', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching exercises:', error);
-        return;
-      }
-
-      setExercises(data || []);
-      calculateStats(data || []);
+      const exercisesData = await DataService.getExercises(1000);
+      console.log(`Fetched exercises for user ${user?.username}:`, exercisesData);
+      setExercises(exercisesData);
+      calculateStats(exercisesData);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -121,9 +102,15 @@ const ExerciseTracker: React.FC = () => {
         return;
       }
 
-      // Create exercise data without user_id to avoid primary key conflict
+      if (!user) {
+        alert('Please log in to add exercises');
+        return;
+      }
+
+      // Create exercise data with user information
       const exerciseData = {
-        user: newExercise.user,
+        user_id: user.id,
+        user: user.username,
         exercise: newExercise.exercise,
         exercise_type: newExercise.exercise_type,
         sets: newExercise.sets,
@@ -147,8 +134,6 @@ const ExerciseTracker: React.FC = () => {
 
       // Reset form
       setNewExercise({
-        user_id: 1,
-        user: 'user1',
         exercise: '',
         exercise_type: '',
         sets: 0,
@@ -191,12 +176,26 @@ const ExerciseTracker: React.FC = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-yellow-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <span className="text-yellow-600 text-2xl">🔒</span>
+          </div>
+          <h3 className="text-yellow-800 font-bold mb-2">Authentication Required</h3>
+          <p className="text-yellow-700">Please log in to track your exercises.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading exercises...</p>
+          <p className="mt-4 text-gray-600">Loading your exercises...</p>
         </div>
       </div>
     );
@@ -205,29 +204,42 @@ const ExerciseTracker: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Exercise Tracker</h1>
+        {/* User Header */}
+        <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-lg p-6 text-white mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+              <span className="text-xl font-bold">
+                {user.username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold">💪 {user.username}'s Exercise Tracker</h1>
+              <p className="text-green-100">Track your workouts and monitor your progress</p>
+            </div>
+          </div>
+        </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-2xl font-bold text-blue-600">{stats.totalWorkouts}</div>
-            <div className="text-sm text-gray-600">Total Workouts</div>
+            <div className="text-sm text-gray-600">Your Total Workouts</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-2xl font-bold text-green-600">{stats.currentStreak}</div>
-            <div className="text-sm text-gray-600">Day Streak</div>
+            <div className="text-sm text-gray-600">Your Day Streak</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-2xl font-bold text-purple-600">{stats.totalVolume}</div>
-            <div className="text-sm text-gray-600">Total Volume</div>
+            <div className="text-sm text-gray-600">Your Total Volume</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-2xl font-bold text-orange-600">{stats.averageWeight}</div>
-            <div className="text-sm text-gray-600">Avg Weight</div>
+            <div className="text-sm text-gray-600">Your Avg Weight</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-lg font-bold text-indigo-600 capitalize">{stats.favoriteExercise}</div>
-            <div className="text-sm text-gray-600">Favorite Exercise</div>
+            <div className="text-sm text-gray-600">Your Favorite Exercise</div>
           </div>
         </div>
 
@@ -349,7 +361,7 @@ const ExerciseTracker: React.FC = () => {
 
         {/* Exercises List */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Recent Exercises</h2>
+          <h2 className="text-xl font-semibold mb-4">Your Recent Exercises</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto">
               <thead>
@@ -428,7 +440,7 @@ const ExerciseTracker: React.FC = () => {
           </div>
           {exercises.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              No exercises found. Add your first workout!
+              No exercises found yet. Add your first workout to get started!
             </div>
           )}
         </div>

@@ -2,19 +2,33 @@ import { supabase } from './supabase';
 import { Exercise } from '../types';
 
 export class DataService {
-  // Default user identifier
-  private static DEFAULT_USER = 'user1';
-
-  // Fetch all exercises with pagination for default user
-  static async getExercises(limit: number = 50, offset: number = 0, user: string = this.DEFAULT_USER) {
+  // Get current user from localStorage
+  private static getCurrentUser() {
     try {
-      console.log(`Fetching exercises for user ${user}...`);
+      const userStr = localStorage.getItem('currentUser');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
+  }
+
+  // Fetch all exercises with pagination for current user
+  static async getExercises(limit: number = 50, offset: number = 0) {
+    try {
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('No user logged in, returning empty array');
+        return [];
+      }
+
+      console.log(`Fetching exercises for user ${currentUser.username}...`);
       
       const { data, error } = await supabase
         .from('exercises')
         .select('*')
-        .eq('user', user) // Changed from 'user_id' to 'user'
-        .order('user_id', { ascending: false })
+        .eq('user_id', currentUser.id) // Use UUID relationship
+        .order('created_at', { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) {
@@ -22,7 +36,7 @@ export class DataService {
         throw error;
       }
       
-      console.log(`Found ${data?.length || 0} exercises for user ${user}`);
+      console.log(`Found ${data?.length || 0} exercises for user ${currentUser.username}`);
       return data || [];
     } catch (error) {
       console.error('Error fetching exercises:', error);
@@ -30,15 +44,19 @@ export class DataService {
     }
   }
 
-  // Insert sample exercise data for testing with default user
-  static async insertSampleExercises(user: string = this.DEFAULT_USER) {
+  // Insert sample exercise data for testing with current user
+  static async insertSampleExercises() {
     try {
-      console.log(`Inserting sample exercises for user ${user}...`);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        throw new Error('User not logged in');
+      }
+
+      console.log(`Inserting sample exercises for user ${currentUser.username}...`);
       
       const sampleExercises = [
         {
-          user_id: 1, // Keep numeric user_id for database compatibility
-          user: user, // Add string user field
+          user_id: currentUser.id, // Use UUID relationship
           exercise: 'Bench Press',
           exercise_type: 'Strength',
           sets: 3,
@@ -50,8 +68,7 @@ export class DataService {
           created_at: new Date().toISOString()
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Squats',
           exercise_type: 'Strength',
           sets: 4,
@@ -63,8 +80,7 @@ export class DataService {
           created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // Yesterday
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Deadlift',
           exercise_type: 'Strength',
           sets: 3,
@@ -76,8 +92,7 @@ export class DataService {
           created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Pull-ups',
           exercise_type: 'Bodyweight',
           sets: 3,
@@ -89,8 +104,7 @@ export class DataService {
           created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() // 3 days ago
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Overhead Press',
           exercise_type: 'Strength',
           sets: 3,
@@ -102,8 +116,7 @@ export class DataService {
           created_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString() // 4 days ago
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Bent Over Rows',
           exercise_type: 'Strength',
           sets: 3,
@@ -115,12 +128,13 @@ export class DataService {
           created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
         },
         {
-          user_id: 1,
-          user: user,
+          user_id: currentUser.id,
           exercise: 'Lunges',
+          exercise_type: 'Strength',
           sets: 3,
           reps: 10,
           weight: 45,
+          userweight: 180,
           time: 35,
           mood: 'Good',
           created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString() // 6 days ago
@@ -137,7 +151,7 @@ export class DataService {
         throw error;
       }
       
-      console.log(`Successfully inserted ${data?.length || 0} sample exercises for user ${user}`);
+      console.log(`Successfully inserted ${data?.length || 0} sample exercises for user ${currentUser.username}`);
       return data;
     } catch (error) {
       console.error('Error inserting sample exercises:', error);
@@ -191,13 +205,28 @@ export class DataService {
     }
   }
 
-  // Calculate comprehensive stats from exercises table only for default user
-  static async getQuickStats(user: string = this.DEFAULT_USER) {
+  // Calculate comprehensive stats from exercises table for current user
+  static async getQuickStats() {
     try {
-      console.log(`Calculating quick stats for user ${user}...`);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('No user logged in, returning default stats');
+        return {
+          totalSets: 0,
+          totalReps: 0,
+          totalVolume: 0,
+          streak: 0,
+          totalWorkouts: 0,
+          totalSessions: 0,
+          averageWeight: 0,
+          totalTime: 0
+        };
+      }
+
+      console.log(`Calculating quick stats for user ${currentUser.username}...`);
       
-      // Fetch all exercises for the user
-      const exercises = await this.getExercises(1000, 0, user);
+      // Fetch all exercises for the current user
+      const exercises = await this.getExercises(1000, 0);
 
       // Calculate stats from exercises table
       const totalSets = exercises.reduce((sum, ex) => sum + (ex.sets || 0), 0);
@@ -271,12 +300,18 @@ export class DataService {
     return streak;
   }
 
-  // Get recent workout summaries from exercises only for default user
-  static async getRecentWorkouts(limit: number = 5, user: string = this.DEFAULT_USER) {
+  // Get recent workout summaries from exercises for current user
+  static async getRecentWorkouts(limit: number = 5) {
     try {
-      console.log(`Fetching recent workouts for user ${user}...`);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('No user logged in, returning empty workouts');
+        return [];
+      }
+
+      console.log(`Fetching recent workouts for user ${currentUser.username}...`);
       
-      const exercises = await this.getExercises(limit * 10, 0, user); // Get more exercises to group by date
+      const exercises = await this.getExercises(limit * 10, 0); // Get more exercises to group by date
       const summaries = [];
 
       // Group exercises by date
@@ -298,7 +333,7 @@ export class DataService {
         summaries.push({
           session: {
             id: date,
-            user_id: dayExercises[0]?.user || user,
+            user_id: currentUser.id,
             muscle_group: 'Mixed',
             mood_pre: dayExercises[0]?.mood || 'Not recorded',
             notes: `${dayExercises.length} exercises completed`,
@@ -317,7 +352,7 @@ export class DataService {
         });
       });
 
-      console.log(`Created ${summaries.length} workout summaries for user ${user}`);
+      console.log(`Created ${summaries.length} workout summaries for user ${currentUser.username}`);
       return summaries;
     } catch (error) {
       console.error('Error fetching recent workouts:', error);
@@ -325,10 +360,16 @@ export class DataService {
     }
   }
 
-  // Get exercises by muscle group (simplified) for default user
-  static async getExercisesByMuscleGroup(muscleGroup: string, user: string = this.DEFAULT_USER) {
+  // Get exercises by muscle group (simplified) for current user
+  static async getExercisesByMuscleGroup(muscleGroup: string) {
     try {
-      const exercises = await this.getExercises(1000, 0, user);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('No user logged in, returning empty exercises');
+        return [];
+      }
+
+      const exercises = await this.getExercises(1000, 0);
       return exercises.filter(ex => 
         ex.exercise.toLowerCase().includes(muscleGroup.toLowerCase())
       );
@@ -338,13 +379,19 @@ export class DataService {
     }
   }
 
-  // Get user's workout history for default user
-  static async getUserWorkoutHistory(user: string = this.DEFAULT_USER, limit: number = 20) {
+  // Get user's workout history for current user
+  static async getUserWorkoutHistory(limit: number = 20) {
     try {
-      const exercises = await this.getExercises(limit, 0, user);
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.log('No user logged in, returning empty history');
+        return [];
+      }
+
+      const exercises = await this.getExercises(limit, 0);
       return exercises.map(exercise => ({
         id: exercise.created_at,
-        user_id: exercise.user || exercise.user_id?.toString() || user,
+        user_id: exercise.user_id?.toString() || currentUser.id,
         exercise_type: exercise.exercise,
         duration: exercise.time,
         transcription: `${exercise.sets} sets of ${exercise.reps} reps`,
