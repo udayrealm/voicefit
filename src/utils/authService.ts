@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { User, LoginCredentials, SignupCredentials } from '../types';
+import { PasswordUtils } from './passwordUtils';
 
 export class AuthService {
   // Get current user from localStorage
@@ -51,9 +52,37 @@ export class AuthService {
 
       console.log('🔐 AuthService: Found user in database:', users);
 
-      // For demo purposes, we'll use a simple password check
-      // In production, you should use proper password hashing
-      if (users.password !== credentials.password) {
+      // Check if password is hashed or plain text (for backward compatibility)
+      let passwordMatches = false;
+      
+      if (PasswordUtils.isHashed(users.password)) {
+        // Password is hashed, use bcrypt to verify
+        passwordMatches = await PasswordUtils.verifyPassword(credentials.password, users.password);
+      } else {
+        // Password is plain text (old format), compare directly for backward compatibility
+        // TODO: Remove this after all passwords are migrated
+        passwordMatches = users.password === credentials.password;
+        
+        // If password matches and it's plain text, hash it for future use
+        if (passwordMatches) {
+          console.log('🔐 AuthService: Migrating plain text password to hash for user:', users.username);
+          const hashedPassword = await PasswordUtils.hashPassword(credentials.password);
+          
+          // Update the password in the database
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({ password: hashedPassword })
+            .eq('id', users.id);
+            
+          if (updateError) {
+            console.error('❌ AuthService: Failed to migrate password:', updateError);
+          } else {
+            console.log('✅ AuthService: Password migrated successfully');
+          }
+        }
+      }
+
+      if (!passwordMatches) {
         console.log('❌ AuthService: Password mismatch');
         throw new Error('Invalid username or password');
       }
@@ -90,13 +119,16 @@ export class AuthService {
         throw new Error('Username already exists');
       }
 
+      // Hash the password before storing
+      const hashedPassword = await PasswordUtils.hashPassword(credentials.password);
+
       // Create new user in Supabase
       const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert({
           username: credentials.username,
           email: credentials.email,
-          password: credentials.password, // In production, hash this password
+          password: hashedPassword, // Store hashed password
           created_at: new Date().toISOString()
         })
         .select()
@@ -169,10 +201,16 @@ export class AuthService {
           .single();
 
         if (!existingUser) {
-          // Insert demo user
+          // Hash the password before storing
+          const hashedPassword = await PasswordUtils.hashPassword(user.password);
+          
+          // Insert demo user with hashed password
           const { error } = await supabase
             .from('users')
-            .insert(user);
+            .insert({
+              ...user,
+              password: hashedPassword
+            });
 
           if (error) {
             console.error(`❌ Error creating demo user ${user.username}:`, error);
