@@ -3,6 +3,7 @@ import WorkoutHistory from './WorkoutHistory';
 import { DataService } from '../utils/dataService';
 import { QuickStats } from '../types';
 import { useAuth } from '../contexts/AuthContext';
+import { PasswordMigration } from '../utils/migratePasswords';
 
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuth();
@@ -17,9 +18,19 @@ const ProfileScreen: React.FC = () => {
     averageWeight: 0,
     totalTime: 0
   });
+  const [migrationStatus, setMigrationStatus] = useState<{
+    isLoading: boolean;
+    message: string;
+    plainTextCount: number;
+  }>({
+    isLoading: false,
+    message: '',
+    plainTextCount: 0
+  });
 
   React.useEffect(() => {
     fetchStats();
+    checkMigrationStatus();
   }, []);
 
   const fetchStats = async () => {
@@ -28,6 +39,43 @@ const ProfileScreen: React.FC = () => {
       setStats(statsData);
     } catch (error) {
       console.error('Error fetching stats:', error);
+    }
+  };
+
+  const checkMigrationStatus = async () => {
+    try {
+      const plainTextCount = await PasswordMigration.checkMigrationStatus();
+      setMigrationStatus(prev => ({
+        ...prev,
+        plainTextCount
+      }));
+    } catch (error) {
+      console.error('Error checking migration status:', error);
+    }
+  };
+
+  const handlePasswordMigration = async () => {
+    setMigrationStatus(prev => ({
+      ...prev,
+      isLoading: true,
+      message: 'Starting password migration...'
+    }));
+
+    try {
+      await PasswordMigration.migrateAllPasswords();
+      await checkMigrationStatus();
+      setMigrationStatus(prev => ({
+        ...prev,
+        isLoading: false,
+        message: 'Password migration completed successfully!'
+      }));
+    } catch (error) {
+      console.error('Password migration failed:', error);
+      setMigrationStatus(prev => ({
+        ...prev,
+        isLoading: false,
+        message: 'Password migration failed. Please try again.'
+      }));
     }
   };
 
@@ -150,6 +198,42 @@ const ProfileScreen: React.FC = () => {
                   <span className="text-gray-400">&gt;</span>
                 </div>
               </div>
+
+              {/* Password Migration Section */}
+              {migrationStatus.plainTextCount > 0 && (
+                <div className="p-4 border-b border-gray-100 bg-yellow-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-yellow-600">⚠️</span>
+                      <span className="text-gray-800 font-medium">Password Security</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Found {migrationStatus.plainTextCount} user(s) with unencrypted passwords. 
+                    Click below to secure them.
+                  </p>
+                  <button
+                    onClick={handlePasswordMigration}
+                    disabled={migrationStatus.isLoading}
+                    className={`w-full py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                      migrationStatus.isLoading
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-yellow-500 text-white hover:bg-yellow-600'
+                    }`}
+                  >
+                    {migrationStatus.isLoading ? 'Migrating...' : 'Migrate Passwords'}
+                  </button>
+                  {migrationStatus.message && (
+                    <p className={`text-xs mt-2 ${
+                      migrationStatus.message.includes('failed') 
+                        ? 'text-red-600' 
+                        : 'text-green-600'
+                    }`}>
+                      {migrationStatus.message}
+                    </p>
+                  )}
+                </div>
+              )}
               
               <div className="p-4">
                 <div className="flex items-center justify-between">
