@@ -11,6 +11,7 @@ import ExerciseTracker from './components/ExerciseTracker';
 import TestAnalytics from './components/TestAnalytics';
 import LoginScreen from './components/LoginScreen';
 import SignupScreen from './components/SignupScreen';
+import ChatAgent from './components/ChatAgent';
 
 // Main App Content
 const AppContent: React.FC = () => {
@@ -77,6 +78,7 @@ const AppContent: React.FC = () => {
           <Route path="/record" element={<RecordScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/chat" element={<ChatAgent />} />
         </Routes>
       </div>
       <Navigation />

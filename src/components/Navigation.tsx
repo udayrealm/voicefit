@@ -15,6 +15,7 @@ const Navigation: React.FC = () => {
     { id: 'tracker', label: 'Tracker', icon: '💪', path: '/tracker' },
     { id: 'test-analytics', label: 'Performance Trends', icon: '🧠', path: '/test-analytics' },
     { id: 'feedback', label: 'Feedback', icon: '🔥', path: '/feedback' },
+    { id: 'chat', label: 'Chat', icon: '💬', path: '/chat' },
   ] as const;
 
   const getActiveTab = () => {
