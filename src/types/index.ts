@@ -91,3 +91,18 @@ export interface SignupCredentials {
   email: string;
   password: string;
 }
+
+// Chat agent types
+export interface ChatMessage {
+  id: string;
+  content: string;
+  sender: 'user' | 'agent';
+  timestamp: Date;
+  isLoading?: boolean;
+}
+
+export interface ChatAgentResponse {
+  message: string;
+  success: boolean;
+  error?: string;
+}
