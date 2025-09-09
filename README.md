@@ -18,14 +18,14 @@ A voice-powered workout tracking application that allows users to record their w
 - Session notes and integration status
 - Quick stats (streak, total workouts)
 - Recent workouts overview
-- n8n integration status indicator
+- System status
 
 ### Record Screen
 - Voice recording functionality
 - Today's workout summary
 - Exercise details with progress tracking
 - Real-time stats (sets, reps, volume)
-- Send recordings to n8n webhook
+   - Submit your workout
 
 ### Analytics Screen
 - Workout performance metrics
