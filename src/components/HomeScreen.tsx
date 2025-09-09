@@ -59,9 +59,9 @@ const HomeScreen: React.FC = () => {
       <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="font-bold text-gray-800 mb-2">n8n Integration Status</h3>
+            <h3 className="font-bold text-gray-800 mb-2">System Status</h3>
             <p className="text-gray-700 text-sm">
-              Connected to n8n workflows for voice processing and data storage via Supabase
+              Connected
             </p>
           </div>
           <div className="flex items-center space-x-2">

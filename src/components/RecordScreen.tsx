@@ -84,7 +84,7 @@ const RecordScreen: React.FC = () => {
         disabled={!audioBlob || isSending || !webhookURL || webhookURL.trim() === ''}
         className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-3 px-6 rounded-lg transition-colors"
       >
-        {isSending ? 'Sending...' : 'Send Recording to n8n Webhook'}
+        {isSending ? 'Sending...' : 'Submit Recording'}
       </button>
 
       {/* Instructions Card */}
