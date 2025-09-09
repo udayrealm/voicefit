@@ -10,7 +10,6 @@ const Navigation: React.FC = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const tabs = [
-    { id: 'home', label: 'Home', icon: '🏠', path: '/home' },
     { id: 'record', label: 'Record', icon: '🎤', path: '/record' },
     { id: 'tracker', label: 'Tracker', icon: '💪', path: '/tracker' },
     { id: 'test-analytics', label: 'Performance Trends', icon: '🧠', path: '/test-analytics' },
@@ -21,7 +20,7 @@ const Navigation: React.FC = () => {
   const getActiveTab = () => {
     const currentPath = location.pathname;
     const activeTab = tabs.find(tab => tab.path === currentPath);
-    return activeTab?.id || 'home';
+    return activeTab?.id || 'record';
   };
 
   const handleTabClick = (path: string) => {
