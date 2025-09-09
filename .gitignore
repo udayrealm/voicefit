@@ -85,3 +85,17 @@ jspm_packages/
 
 # TernJS port file
 .tern-port 
+# Unnecessary markdown documentation files
+CHAT_ERROR_HANDLING.md
+FITNESS_TRACKER_FEATURES.md
+PASSWORD_SECURITY.md
+SUPABASE_CONNECTION_FLOW.md
+SUPABASE_SETUP_GUIDE.md
+SUPABASE_SETUP_INSTRUCTIONS.md
+# SQL setup scripts
+CREATE_USERS_TABLE.sql
+FEEDBACK_TABLE_SETUP.sql
+FIX_FEEDBACK_RLS_POLICIES.sql
+PASSWORD_MIGRATION_QUERIES.sql
+# Example environment file
+env.example
